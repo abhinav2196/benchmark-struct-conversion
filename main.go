@@ -5,6 +5,7 @@ import (
 	"BenchmarkStructConversion/Models"
 	"fmt"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"runtime"
 	"sync"
@@ -33,8 +34,8 @@ func main() {
 		// err := Approaches.ConvertWithCopier(input,&output)
 		//err := Approaches.ConvertWithNativeLib(input,&output)
 		//err := Approaches.ConvertWithJsonIter(input,&output)
-		//err := Approaches.ConvertWithEasyJson(input,&output)
-		err := Approaches.ConvertWithManualMapping(input, &output)
+		err := Approaches.ConvertWithEasyJson(input,&output)
+		//err := Approaches.ConvertWithManualMapping(input, &output)
 
 		if err != nil {
 			//fmt.Printf("Recieved an error")
@@ -49,9 +50,16 @@ func main() {
 
 	fmt.Println("Total time taken", totalTimeTaken)
 
+	//Running profiling server, can be accessed at http://localhost:8085/debug/pprof/
+
+	http.HandleFunc("/", hiHandler)
+	http.ListenAndServe(":8085", nil)
+
 	//runtime.GC()
 
-	wg.Wait()
+	//Uncomment this if you want to keep the application running after execution has been completed
+
+	//wg.Wait()
 
 }
 
